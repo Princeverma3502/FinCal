@@ -4,7 +4,7 @@ import { useMortgage } from "@/hooks/use-mortgage";
 import { StatCards } from "@/components/dashboard/StatCards";
 // Note: We will create InputSidebar and PaymentChart next
 import { InputSidebar } from "@/components/dashboard/InputSidebar";
-// import { PaymentChart } from "@/components/dashboard/PaymentChart";
+import { PaymentChart } from "@/components/dashboard/PaymentChart";
 
 export default function MortgageDashboard() {
   const { inputs, results, updateInput } = useMortgage();
@@ -43,7 +43,10 @@ export default function MortgageDashboard() {
             
             <div className="bg-white p-6 rounded-fintech shadow-sm border border-slate-100 h-[400px]">
               <h2 className="font-semibold mb-6 text-slate-800 uppercase text-xs tracking-wider">Balance Over Time</h2>
-              {/* Chart component will go here */}
+              <div className="bg-white p-6 rounded-fintech shadow-sm border border-slate-100 h-[450px]">
+                <h2 className="font-semibold mb-6 text-slate-800 uppercase text-xs tracking-wider">Balance Over Time</h2>
+                <PaymentChart data={results.schedule} />
+              </div>
               <div className="h-full flex items-center justify-center bg-slate-50 rounded-lg border border-dashed border-slate-200">
                 <p className="text-slate-400">Chart Visualization Area</p>
               </div>

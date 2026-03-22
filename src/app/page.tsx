@@ -1,9 +1,9 @@
 "use client";
 
-import { useMortgage } from "@/hooks/useMortgage";
+import { useMortgage } from "@/hooks/use-mortgage";
 import { StatCards } from "@/components/dashboard/StatCards";
 // Note: We will create InputSidebar and PaymentChart next
-// import { InputSidebar } from "@/components/dashboard/InputSidebar"; 
+import { InputSidebar } from "@/components/dashboard/InputSidebar";
 // import { PaymentChart } from "@/components/dashboard/PaymentChart";
 
 export default function MortgageDashboard() {
@@ -23,7 +23,12 @@ export default function MortgageDashboard() {
           <div className="lg:col-span-4 space-y-6">
              <div className="bg-white p-6 rounded-fintech shadow-sm border border-slate-100">
                 <h2 className="font-semibold mb-6 text-slate-800 uppercase text-xs tracking-wider">Loan Parameters</h2>
-                {/* We will place the InputSidebar component here soon */}
+                <div className="lg:col-span-4">
+                  <div className="bg-white p-6 rounded-fintech shadow-sm border border-slate-100 sticky top-8">
+                    <h2 className="font-semibold mb-6 text-slate-800 uppercase text-xs tracking-wider">Loan Parameters</h2>
+                    <InputSidebar inputs={inputs} updateInput={updateInput} />
+                  </div>
+                </div>
                 <p className="text-sm text-slate-400">Sidebar component loading...</p>
              </div>
           </div>

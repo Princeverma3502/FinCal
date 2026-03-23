@@ -46,9 +46,14 @@ export const PaymentChart = ({ data }: Props) => {
             tick={{ fill: '#94A3B8', fontSize: 12 }}
             tickFormatter={(value) => `$${value / 1000}k`}
           />
-          <Tooltip 
+          <Tooltip
             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-            formatter={(value: number) => [`$${value.toLocaleString()}`, "Balance"]}
+            formatter={(value) => {
+              if (typeof value === 'number') {
+                return [`$${value.toLocaleString()}`, "Balance"];
+              }
+              return [value, "Balance"];
+            }}
           />
           <Area 
             type="monotone" 

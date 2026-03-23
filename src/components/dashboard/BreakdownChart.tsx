@@ -32,8 +32,11 @@ export const BreakdownChart = ({ principal, interest, tax, insurance }: Props) =
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip 
-            formatter={(value: number) => formatCurrency(value)}
+          <Tooltip
+            formatter={(value) => {
+              if (typeof value !== 'number') return value;
+              return formatCurrency(value);
+            }}
             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
           />
           <Legend verticalAlign="bottom" height={36}/>

@@ -28,6 +28,10 @@
 /public/opengraph-image.png
 /public/manifest.json
 
+# Ensure these are ALWAYS tracked
+!package-lock.json
+!src/app/manifest.ts
+
 # misc
 .DS_Store
 *.pem

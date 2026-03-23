@@ -3,9 +3,17 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useChartDimensions } from '@/hooks/useChartDimensions';
-import { formatCurrency } from '@/utils/finance';
+import { formatCurrency, CurrencyCode } from '@/utils/finance';
 
-export const BreakdownChart = ({ principal, interest, tax, insurance }: any) => {
+interface Props {
+  principal: number;
+  interest: number;
+  tax: number;
+  insurance: number;
+  currency: CurrencyCode;
+}
+
+export const BreakdownChart = ({ principal, interest, tax, insurance, currency }: Props) => {
   const [containerRef, width] = useChartDimensions();
 
   const data = [
@@ -15,7 +23,7 @@ export const BreakdownChart = ({ principal, interest, tax, insurance }: any) => 
   ];
 
   return (
-    <div ref={containerRef} className="w-full h-[300px] flex items-center justify-center">
+    <div ref={containerRef as React.RefObject<HTMLDivElement>} className="w-full h-[300px] flex items-center justify-center">
       {width > 0 ? (
         <PieChart width={width} height={300}>
           <Pie
@@ -25,14 +33,21 @@ export const BreakdownChart = ({ principal, interest, tax, insurance }: any) => 
             paddingAngle={8}
             dataKey="value"
             stroke="none"
-            cornerRadius={6}
           >
-            {data.map((entry: any, index: number) => (
+            {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip formatter={((val: number) => [formatCurrency(val), "Monthly"]) as any} />
-          <Legend verticalAlign="bottom" iconType="circle" />
+          {/* FIXED: Added currency argument to formatCurrency and fixed Tooltip signature */}
+          <Tooltip 
+            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+            formatter={((val: number) => [formatCurrency(val, currency), "Monthly"]) as any} 
+          />
+          <Legend 
+            verticalAlign="bottom" 
+            iconType="circle" 
+            wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 'bold' }} 
+          />
         </PieChart>
       ) : (
         <div className="w-full h-full bg-slate-50 animate-pulse rounded-3xl" />

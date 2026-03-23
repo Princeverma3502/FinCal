@@ -47,7 +47,8 @@
     "braces": "^3.0.3"
   },
   "optionalDependencies": {
-    "@next/swc-linux-x64-gnu": "16.2.1",
+    "@next/swc-linux-x64-gnu": "^16.2.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
     "lightningcss": "^1.32.0",
     "sharp": "^0.34.5"
   }

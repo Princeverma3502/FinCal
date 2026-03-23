@@ -1,50 +1,64 @@
-import { LoanInputs, AmortizationPeriod } from "@/types";
+"use client";
 
-export const formatCurrency = (val: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(val);
+export type CurrencyCode = 'INR' | 'USD' | 'GBP' | 'EUR';
 
-export const getPayoffDate = (years: number): string => {
-  const date = new Date();
-  date.setFullYear(date.getFullYear() + Number(years));
-  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+export const CURRENCY_CONFIG: Record<CurrencyCode, { locale: string; symbol: string }> = {
+  INR: { locale: 'en-IN', symbol: '₹' },
+  USD: { locale: 'en-US', symbol: '$' },
+  GBP: { locale: 'en-GB', symbol: '£' },
+  EUR: { locale: 'de-DE', symbol: '€' },
 };
 
-export const calculateMortgage = (inputs: LoanInputs) => {
-  const { principal, interestRate, years, propertyTax, insurance, extraPayment } = inputs;
+export const formatCurrency = (val: number, code: CurrencyCode = 'INR') => {
+  const config = CURRENCY_CONFIG[code] || CURRENCY_CONFIG.INR;
+  return new Intl.NumberFormat(config.locale, {
+    style: "currency",
+    currency: code,
+    maximumFractionDigits: 0,
+  }).format(val || 0);
+};
+
+export const getPayoffDate = (months: number): Date => {
+  const date = new Date();
+  date.setMonth(date.getMonth() + Math.round(months));
+  return date;
+};
+
+export const calculateMortgage = (inputs: any, code: CurrencyCode = 'INR') => {
+  const { 
+    principal, 
+    interestRate, 
+    years, 
+    propertyTax, 
+    insurance, 
+    extraPayment, 
+    lumpSumAmount, 
+    taxBracket 
+  } = inputs;
 
   const monthlyRate = interestRate / 100 / 12;
   const totalMonths = years * 12;
 
-  // Monthly Principal & Interest (Standard Formula)
-  let monthlyPI = 0;
-  if (monthlyRate === 0) {
-    monthlyPI = principal / totalMonths;
-  } else {
-    monthlyPI =
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
+  const monthlyPI = monthlyRate === 0 
+    ? principal / totalMonths 
+    : (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
       (Math.pow(1 + monthlyRate, totalMonths) - 1);
-  }
-
-  const monthlyTax = propertyTax / 12;
-  const monthlyInsurance = insurance / 12;
-  const baseMonthlyPayment = monthlyPI + monthlyTax + monthlyInsurance;
 
   let balance = principal;
-  const schedule: AmortizationPeriod[] = [];
+  const schedule = [];
   let totalInterestPaid = 0;
 
   for (let i = 1; i <= totalMonths; i++) {
     if (balance <= 0) break;
 
     const interest = balance * monthlyRate;
-    // User pays base monthly + extra
-    let actualPrincipalPaid = (monthlyPI - interest) + extraPayment;
     
-    // Ensure we don't overpay the remaining balance
+
+    const isLumpSumMonth = i % 12 === 0;
+    const currentLumpSum = isLumpSumMonth ? lumpSumAmount : 0;
+    
+    let actualPrincipalPaid = (monthlyPI - interest) + extraPayment + currentLumpSum;
+    
     if (actualPrincipalPaid > balance) {
       actualPrincipalPaid = balance;
     }
@@ -54,19 +68,23 @@ export const calculateMortgage = (inputs: LoanInputs) => {
 
     schedule.push({
       month: i,
-      payment: baseMonthlyPayment + extraPayment,
-      interestPaid: interest,
-      principalPaid: actualPrincipalPaid,
+      payment: monthlyPI + extraPayment + currentLumpSum,
+      interestPayment: interest,
+      principalPayment: actualPrincipalPaid,
       remainingBalance: Math.max(0, balance),
     });
   }
 
+  const totalTaxSavings = totalInterestPaid * (taxBracket / 100);
+
   return {
-    monthlyPayment: baseMonthlyPayment + extraPayment,
+    monthlyPayment: monthlyPI + (propertyTax / 12) + (insurance / 12) + extraPayment,
     totalInterest: totalInterestPaid,
     totalCost: principal + totalInterestPaid + (propertyTax * years) + (insurance * years),
     schedule,
-    payoffDate: getPayoffDate(schedule.length / 12),
-    monthsSaved: totalMonths - schedule.length
+    payoffDate: getPayoffDate(schedule.length),
+    monthsSaved: totalMonths - schedule.length,
+    totalTaxSavings,
+    currencyCode: code
   };
 };

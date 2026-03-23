@@ -8,15 +8,8 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        brand: {
-          navy: "#0F172A",
-          indigo: "#6366F1",
-          emerald: "#10B981",
-        }
-      },
       borderRadius: {
-        'fintech': '1.25rem', // Extra rounded for that modern look
+        'fintech': '1.25rem',
       }
     },
   },

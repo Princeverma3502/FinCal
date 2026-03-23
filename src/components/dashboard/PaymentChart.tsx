@@ -1,70 +1,78 @@
 "use client";
 
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
-import { AmortizationPeriod } from '@/types';
+import React from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { useChartDimensions } from '@/hooks/useChartDimensions';
 
 interface Props {
-  data: AmortizationPeriod[];
+  data: any[];
+  baselineData?: any[];
 }
 
-export const PaymentChart = ({ data }: Props) => {
-  // We only show one data point per year to keep the chart clean
-  const chartData = data.filter((item) => item.month % 12 === 0).map((item) => ({
-    year: item.month / 12,
-    balance: Math.round(item.remainingBalance),
-  }));
+export const PaymentChart = ({ data = [], baselineData }: Props) => {
+  const [containerRef, width] = useChartDimensions();
+
+  // Merge the current data and baseline data for the chart
+  const chartData = data?.filter((item) => item.month % 12 === 0).map((item, index) => {
+    const year = item.month / 12;
+    const baseItem = baselineData?.find(b => b.month === item.month);
+    
+    return {
+      year: year,
+      current: Math.round(item.remainingBalance),
+      baseline: baseItem ? Math.round(baseItem.remainingBalance) : null,
+    };
+  }) || [];
 
   return (
-    <div className="w-full h-full min-h-[300px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+    <div ref={containerRef} className="w-full h-[350px]">
+      {width > 0 ? (
+        <AreaChart width={width} height={350} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
-            <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#6366F1" stopOpacity={0.1}/>
               <stop offset="95%" stopColor="#6366F1" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-          <XAxis 
-            dataKey="year" 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fill: '#94A3B8', fontSize: 12 }}
-            label={{ value: 'Years', position: 'insideBottomRight', offset: -5, fill: '#94A3B8', fontSize: 12 }}
-          />
+          <XAxis dataKey="year" axisLine={false} tickLine={false} label={{ value: 'Years', position: 'insideBottom', offset: -5 }} />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: '#94A3B8', fontSize: 12 }}
-            tickFormatter={(value) => `$${value / 1000}k`}
+            tickFormatter={((val: number) => `₹${val / 100000}L`) as any}
           />
-          <Tooltip
-            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-            formatter={(value) => {
-              if (typeof value === 'number') {
-                return [`$${value.toLocaleString()}`, "Balance"];
-              }
-              return [value, "Balance"];
-            }}
+          <Tooltip 
+            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+            formatter={((val: number) => [`₹${val.toLocaleString('en-IN')}`, ""] ) as any} 
           />
+          <Legend verticalAlign="top" align="right" height={36}/>
+          
+          {/* Baseline Line (rendered first so it's behind) */}
+          {baselineData && (
+            <Area 
+              name="Baseline"
+              type="monotone" 
+              dataKey="baseline" 
+              stroke="#94A3B8" 
+              fill="transparent" 
+              strokeWidth={2} 
+              strokeDasharray="5 5"
+            />
+          )}
+
+          {/* Current Selection */}
           <Area 
+            name="Current"
             type="monotone" 
-            dataKey="balance" 
+            dataKey="current" 
             stroke="#6366F1" 
-            strokeWidth={3}
-            fillOpacity={1} 
-            fill="url(#colorBalance)" 
+            fill="url(#colorCurrent)" 
+            strokeWidth={3} 
           />
         </AreaChart>
-      </ResponsiveContainer>
+      ) : (
+        <div className="w-full h-full bg-slate-50 animate-pulse rounded-3xl" />
+      )}
     </div>
   );
 };

@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-brand-navy: #0F172A;
+  --color-brand-indigo: #6366F1;
+  --color-brand-emerald: #10B981;
+  --radius-fintech: 1.25rem;
+}
 
 :root {
   --background: #f8fafc;
@@ -10,14 +15,24 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Custom Slider Styling for that Fintech feel */
+/* Custom Slider Styling - Refined for v4 */
 input[type='range'] {
-  @apply h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-indigo-600;
+  appearance: none;
+  width: 100%;
+  height: 6px; /* Replacing h-1.5 with raw CSS to avoid apply errors */
+  background: #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 input[type='range']::-webkit-slider-thumb {
-  @apply h-4 w-4 appearance-none rounded-full border-2 border-white bg-indigo-600 shadow-md;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  background: #6366F1;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }

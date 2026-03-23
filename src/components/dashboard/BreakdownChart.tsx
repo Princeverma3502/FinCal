@@ -1,47 +1,42 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import React from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { useChartDimensions } from '@/hooks/useChartDimensions';
 import { formatCurrency } from '@/utils/finance';
 
-interface Props {
-  principal: number;
-  interest: number;
-  tax: number;
-  insurance: number;
-}
+export const BreakdownChart = ({ principal, interest, tax, insurance }: any) => {
+  const [containerRef, width] = useChartDimensions();
 
-export const BreakdownChart = ({ principal, interest, tax, insurance }: Props) => {
   const data = [
-    { name: 'Principal & Interest', value: principal + interest, color: '#6366F1' },
-    { name: 'Property Taxes', value: tax / 12, color: '#10B981' },
-    { name: 'Insurance', value: insurance / 12, color: '#F43F5E' },
+    { name: 'Principal & Interest', value: (principal || 0) + (interest || 0), color: '#6366F1' },
+    { name: 'Taxes', value: (tax || 0) / 12, color: '#10B981' },
+    { name: 'Insurance', value: (insurance || 0) / 12, color: '#F43F5E' },
   ];
 
   return (
-    <div className="h-[300px] w-full mt-4">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+    <div ref={containerRef} className="w-full h-[300px] flex items-center justify-center">
+      {width > 0 ? (
+        <PieChart width={width} height={300}>
           <Pie
             data={data}
             innerRadius={70}
             outerRadius={90}
-            paddingAngle={5}
+            paddingAngle={8}
             dataKey="value"
+            stroke="none"
+            cornerRadius={6}
           >
-            {data.map((entry, index) => (
+            {data.map((entry: any, index: number) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip
-            formatter={(value) => {
-              if (typeof value !== 'number') return value;
-              return formatCurrency(value);
-            }}
-            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-          />
-          <Legend verticalAlign="bottom" height={36}/>
+          <Tooltip formatter={((val: number) => [formatCurrency(val), "Monthly"]) as any} />
+          <Legend verticalAlign="bottom" iconType="circle" />
         </PieChart>
-      </ResponsiveContainer>
+      ) : (
+        <div className="w-full h-full bg-slate-50 animate-pulse rounded-3xl" />
+      )}
     </div>
   );
 };

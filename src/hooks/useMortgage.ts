@@ -1,32 +1,37 @@
+"use client";
+
 import { useState, useMemo } from 'react';
-import { calculateMortgage } from '@/utils/finance';
 import { LoanInputs } from '@/types';
+import { calculateMortgage, CurrencyCode } from '@/utils/finance';
 
-export const useMortgage = () => {
-  // Initial default values for a standard home loan
+/**
+ * Enhanced useMortgage Hook
+ * @param initialCurrency - Pass the currency state from your page.tsx here
+ */
+export const useMortgage = (initialCurrency: CurrencyCode = 'INR') => {
   const [inputs, setInputs] = useState<LoanInputs>({
-    principal: 300000,
-    interestRate: 6.5,
-    years: 30,
-    propertyTax: 3000,
-    insurance: 1200,
+    principal: 5000000,
+    interestRate: 8.5,
+    years: 20,
     extraPayment: 0,
+    lumpSumAmount: 0,
+    propertyTax: 0,
+    insurance: 0,
+    taxBracket: 30,
   });
+  const [currency] = useState<CurrencyCode>(initialCurrency);
 
-  // Recalculate only when inputs change for maximum performance
-  const results = useMemo(() => calculateMortgage(inputs), [inputs]);
-
-  // Helper to update any specific input field
   const updateInput = (key: keyof LoanInputs, value: number) => {
-    setInputs((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setInputs(prev => ({ ...prev, [key]: value }));
   };
 
-  return {
-    inputs,
-    results,
-    updateInput,
+  const results = useMemo(() => {
+    return calculateMortgage(inputs, currency);
+  }, [inputs, currency]);
+
+  return { 
+    inputs, 
+    results, 
+    updateInput 
   };
 };

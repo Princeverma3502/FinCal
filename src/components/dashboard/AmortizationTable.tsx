@@ -1,60 +1,63 @@
 "use client";
 
-import React from "react";
-import { AmortizationPeriod } from "@/types";
-import { formatCurrency } from "@/utils/finance";
-import { ArrowDownCircle } from "lucide-react";
+import React, { useState } from 'react';
+import { formatCurrency, CurrencyCode } from '@/utils/finance';
 
 interface Props {
-  schedule: AmortizationPeriod[];
+  schedule: any[];
+  currency: CurrencyCode; // Added to fix the red error
 }
 
-export const AmortizationTable = ({ schedule }: Props) => {
-  // Show data for the end of each year
-  const yearlyData = schedule.filter((item) => item.month % 12 === 0 || item.remainingBalance === 0);
+export const AmortizationTable = ({ schedule, currency }: Props) => {
+  const [view, setView] = useState<'monthly' | 'yearly'>('yearly');
+
+  const displayData = view === 'yearly' 
+    ? schedule.filter(item => item.month % 12 === 0 || item.remainingBalance === 0)
+    : schedule;
 
   return (
-    <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-      <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+    <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
+      <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="font-bold text-slate-800 text-xl">Annual Breakdown</h2>
-          <p className="text-sm text-slate-400">Year-over-year principal and interest progress</p>
+          <h2 className="font-bold text-slate-800 text-xl">Payment Schedule</h2>
+          <p className="text-slate-400 text-xs">Principal vs Interest breakdown</p>
         </div>
-        <button className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl hover:bg-indigo-100 transition-colors">
-          <ArrowDownCircle size={14} />
-          Full Monthly View
-        </button>
+        <div className="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
+          {['monthly', 'yearly'].map((v) => (
+            <button 
+              key={v}
+              onClick={() => setView(v as 'monthly' | 'yearly')}
+              className={`flex-1 sm:px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all ${view === v ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500'}`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-widest">
-              <th className="px-8 py-4">Timeline</th>
-              <th className="px-8 py-4">Principal Paid</th>
-              <th className="px-8 py-4">Interest Paid</th>
-              <th className="px-8 py-4 text-right">Remaining Balance</th>
+
+      <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table className="w-full text-left border-collapse min-w-[500px]">
+          <thead className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-20">
+            <tr>
+              {['Period', 'Principal', 'Interest', 'Balance'].map((h) => (
+                <th key={h} className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">{h}</th>
+              ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {yearlyData.map((year, index) => (
-              <tr key={year.month} className="group hover:bg-slate-50/50 transition-colors">
-                <td className="px-8 py-5">
-                  <span className="text-sm font-bold text-slate-900">Year {Math.ceil(year.month / 12)}</span>
+            {displayData.map((item) => (
+              <tr key={item.month} className="hover:bg-slate-50/50 transition-colors">
+                <td className="px-8 py-4 text-sm font-bold text-slate-700">
+                  {view === 'yearly' ? `Year ${Math.ceil(item.month / 12)}` : `Month ${item.month}`}
                 </td>
-                <td className="px-8 py-5">
-                  <span className="text-sm font-semibold text-emerald-600">
-                    {formatCurrency(year.principalPaid * 12)}
-                  </span>
+                <td className="px-8 py-4 text-sm text-emerald-600 font-medium">
+                  {formatCurrency(item.principalPayment, currency)}
                 </td>
-                <td className="px-8 py-5">
-                  <span className="text-sm font-semibold text-rose-400">
-                    {formatCurrency(year.interestPaid * 12)}
-                  </span>
+                <td className="px-8 py-4 text-sm text-rose-500 font-medium">
+                  {formatCurrency(item.interestPayment, currency)}
                 </td>
-                <td className="px-8 py-5 text-right">
-                  <span className="text-sm font-black text-slate-900">
-                    {formatCurrency(year.remainingBalance)}
-                  </span>
+                <td className="px-8 py-4 text-sm text-slate-900 font-black">
+                  {formatCurrency(item.remainingBalance, currency)}
                 </td>
               </tr>
             ))}

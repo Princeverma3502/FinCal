@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🏠 FinCal | Professional Mortgage & Equity Tracker
+FinCal is a high-performance, interactive mortgage calculator built for homeowners who want to visualize their financial future. Unlike basic calculators, FinCal offers multi-currency support, tax benefit estimations, and a "Baseline" comparison tool to track how prepayments or rate changes impact long-term wealth.
 
-## Getting Started
+✨ Key Features
+Real-Time Amortization: Instant updates to Equity Growth and Balance Projection charts as you slide parameters.
 
-First, run the development server:
+Multi-Currency Engine: Seamlessly switch between INR (₹), USD ($), GBP (£), and EUR (€) with localized formatting.
 
-```bash
+Baseline Comparison: Save a "Snapshot" of your current loan to compare against new "What-If" scenarios (refinancing, prepayments, etc.).
+
+Smart Analysis:
+
+Tax Benefit Tracker: Estimate annual savings based on interest components.
+
+Rent vs. Buy: Data-driven comparison to help make the big decision.
+
+Goal Tracking: Progress bars showing how close you are to owning your home 100%.
+
+Professional Exports: Download a branded PDF report or export the full schedule to CSV for Excel analysis.
+
+🚀 Tech Stack
+Framework: Next.js 15 (App Router + Turbopack)
+
+Language: TypeScript (Strict Mode)
+
+Styling: Tailwind CSS
+
+Charts: Recharts (Customized for high-density financial data)
+
+Icons: Lucide React
+
+Testing: Playwright (Cross-browser automation)
+
+PDF Generation: jsPDF + AutoTable
+
+🛠️ Getting Started
+Prerequisites
+Node.js 20.9.0 or later
+
+npm or yarn
+
+Installation
+Clone the repository:
+
+Bash
+git clone https://github.com/Princeverma3502/FinCal.git
+cd FinCal
+Install dependencies:
+
+Bash
+npm install
+Run the development server:
+
+Bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 to see the result.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🧪 Testing
+We use Playwright for end-to-end testing to ensure financial calculations remain accurate across all browsers.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Bash
+# Install browsers
+npx playwright install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run tests
+npx playwright test
+🏗️ CI/CD Workflow
+The project includes a robust GitHub Actions pipeline that:
 
-## Learn More
+Validates TypeScript types (Strict Mode).
 
-To learn more about Next.js, take a look at the following resources:
+Builds the production bundle using Node 20.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Runs E2E tests across Chromium, Firefox, and Webkit.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Uploads test traces if a failure occurs.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.

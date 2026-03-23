@@ -19,32 +19,26 @@ Goal Tracking: Progress bars showing how close you are to owning your home 100%.
 Professional Exports: Download a branded PDF report or export the full schedule to CSV for Excel analysis.
 
 🚀 Tech Stack
+
 Framework: Next.js 15 (App Router + Turbopack)
-
 Language: TypeScript (Strict Mode)
-
 Styling: Tailwind CSS
-
 Charts: Recharts (Customized for high-density financial data)
-
 Icons: Lucide React
-
 Testing: Playwright (Cross-browser automation)
-
 PDF Generation: jsPDF + AutoTable
 
 🛠️ Getting Started
 Prerequisites
 Node.js 20.9.0 or later
-
 npm or yarn
 
 Installation
 Clone the repository:
-
 Bash
 git clone https://github.com/Princeverma3502/FinCal.git
 cd FinCal
+
 Install dependencies:
 
 Bash

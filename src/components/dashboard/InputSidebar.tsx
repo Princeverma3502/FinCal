@@ -7,19 +7,18 @@ import { CurrencyCode, CURRENCY_CONFIG } from "@/utils/finance";
 interface Props {
   inputs: LoanInputs;
   updateInput: (key: keyof LoanInputs, value: number) => void;
-  currency: CurrencyCode; // Added currency prop
+  currency: CurrencyCode;
 }
 
 export const InputSidebar = ({ inputs, updateInput, currency }: Props) => {
-  // Get the correct symbol from our config utility
   const symbol = CURRENCY_CONFIG[currency]?.symbol || "₹";
 
   const controls = [
-    { label: "Loan Amount", key: "principal" as const, min: 100000, max: 100000000, step: 50000, useCurrency: true },
-    { label: "Interest Rate", key: "interestRate" as const, min: 1, max: 20, step: 0.05, suffix: "%" },
-    { label: "Tenure", key: "years" as const, min: 1, max: 30, step: 1, suffix: " Yrs" },
-    { label: "Extra Monthly", key: "extraPayment" as const, min: 0, max: 200000, step: 1000, useCurrency: true },
-    { label: "Lump Sum (Yearly)", key: "lumpSumAmount" as const, min: 0, max: 1000000, step: 5000, useCurrency: true },
+    { label: "Loan Amount", key: "principal" as keyof LoanInputs, min: 100000, max: 100000000, step: 50000, useCurrency: true },
+    { label: "Interest Rate", key: "interestRate" as keyof LoanInputs, min: 1, max: 20, step: 0.05, suffix: "%" },
+    { label: "Tenure", key: "years" as keyof LoanInputs, min: 1, max: 30, step: 1, suffix: " Yrs" },
+    { label: "Extra Monthly", key: "extraPayment" as keyof LoanInputs, min: 0, max: 200000, step: 1000, useCurrency: true },
+    { label: "Lump Sum (Yearly)", key: "lumpSumAmount" as keyof LoanInputs, min: 0, max: 1000000, step: 5000, useCurrency: true },
   ];
 
   return (
@@ -34,7 +33,7 @@ export const InputSidebar = ({ inputs, updateInput, currency }: Props) => {
               {ctrl.useCurrency && <span className="text-slate-400 text-xs font-bold mr-1">{symbol}</span>}
               <input
                 type="number"
-                value={inputs[ctrl.key]}
+                value={inputs[ctrl.key] || 0}
                 onChange={(e) => updateInput(ctrl.key, Number(e.target.value))}
                 className="w-20 bg-transparent text-right text-xs font-black text-slate-900 focus:outline-none"
               />
@@ -46,7 +45,7 @@ export const InputSidebar = ({ inputs, updateInput, currency }: Props) => {
             min={ctrl.min}
             max={ctrl.max}
             step={ctrl.step}
-            value={inputs[ctrl.key]}
+            value={inputs[ctrl.key] || 0}
             onChange={(e) => updateInput(ctrl.key, parseFloat(e.target.value))}
             className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-500 transition-all"
           />

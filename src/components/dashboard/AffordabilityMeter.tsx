@@ -28,10 +28,7 @@ export const AffordabilityMeter = ({ dti }: Props) => {
         </span>
       </div>
       <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex">
-        <div 
-          className={cn("h-full transition-all duration-1000", level.color)} 
-          style={{ width: `${Math.min(dti, 100)}%` }}
-        />
+        <div className={cn("h-full transition-all duration-1000", level.color)} style={{ width: `${Math.min(dti, 100)}%` }}/>
       </div>
       <p className="text-[11px] text-slate-400 leading-relaxed italic">
         Lenders typically prefer a DTI ratio below 36% for mortgage approval.

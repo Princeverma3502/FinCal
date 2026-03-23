@@ -39,9 +39,12 @@ export default function MortgageDashboard() {
     <div className="min-h-screen bg-[#F8FAFC] antialiased pb-24 lg:pb-0">
       <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-[100]">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black">F</div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight">FinCal.</span>
+          {/* LOGO MATCHING HOME PAGE */}
+          <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-100">
+              F
+            </div>
+            <span className="text-xl font-black text-slate-900 tracking-tighter">FinCal</span>
           </div>
           
           <div className="flex items-center gap-3">
@@ -68,7 +71,7 @@ export default function MortgageDashboard() {
 
       <main className="max-w-7xl mx-auto p-4 md:p-8">
         <div className="lg:hidden flex bg-white p-1 rounded-2xl border border-slate-200 mb-6 sticky top-20 z-[90] shadow-sm">
-          <button onClick={() => setActiveTab('inputs')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'inputs' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500'}`}><Settings2 size={14}/> Inputs</button>
+          <button onClick={() => setActiveTab('inputs')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'inputs' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-50'}`}><Settings2 size={14}/> Inputs</button>
           <button onClick={() => setActiveTab('analysis')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'analysis' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500'}`}><LayoutDashboard size={14}/> Analysis</button>
           <button onClick={() => setActiveTab('schedule')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'schedule' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500'}`}><TableIcon size={14}/> Table</button>
         </div>
@@ -76,12 +79,9 @@ export default function MortgageDashboard() {
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
           <aside className={`w-full lg:col-span-4 space-y-6 lg:sticky lg:top-28 ${activeTab === 'inputs' ? 'block' : 'hidden lg:block'}`}>
             <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
-              {/* FIXED: Passing currency prop here */}
               <InputSidebar inputs={inputs} updateInput={updateInput} currency={currency} />
             </div>
-
             <GoalTracker principal={inputs.principal} interestRate={inputs.interestRate} currency={currency} />
-
             <div className="bg-emerald-600 p-6 rounded-[2.5rem] shadow-xl text-white relative overflow-hidden group">
               <ShieldCheck className="absolute -right-4 -bottom-4 text-white/10 w-24 h-24 group-hover:scale-110 transition-transform duration-500" />
               <div className="relative z-10">
@@ -90,25 +90,21 @@ export default function MortgageDashboard() {
                 <p className="text-[10px] uppercase font-bold text-emerald-100 mt-1 opacity-80">Estimated Savings</p>
               </div>
             </div>
-            
             <RentVsBuy monthlyMortgage={results.monthlyPayment} downPayment={inputs.principal * 0.2} homeValue={inputs.principal * 1.25} currency={currency} />
           </aside>
 
           <section className={`w-full lg:col-span-8 space-y-8 ${activeTab !== 'inputs' ? 'block' : 'hidden lg:block'}`}>
             <StatCards monthlyPayment={results.monthlyPayment} totalInterest={results.totalInterest} payoffDate={results.payoffDate} currency={currency} />
-
             <div className={`space-y-8 ${activeTab === 'analysis' ? 'block' : 'hidden lg:block'}`}>
               <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
                 <h2 className="font-bold text-slate-800 text-xl mb-6">Equity Growth</h2>
-                {/* FIXED: Passing currency prop here */}
-                <div className="h-[300px] md:h-[400px]"><InterestPrincipalChart data={results.schedule} currency={currency} /></div>
+                <div className="h-[400px]"><InterestPrincipalChart data={results.schedule} currency={currency} /></div>
               </div>
               <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
                 <h2 className="font-bold text-slate-800 text-xl mb-6">Balance Projection</h2>
-                <div className="h-[300px] md:h-[350px]"><PaymentChart data={results.schedule} baselineData={baseline?.results?.schedule} currency={currency} /></div>
+                <div className="h-[350px]"><PaymentChart data={results.schedule} baselineData={baseline?.results?.schedule} currency={currency} /></div>
               </div>
             </div>
-
             <div className={activeTab === 'schedule' ? 'block' : 'hidden lg:block'}>
               <AmortizationTable schedule={results.schedule} currency={currency} />
             </div>
@@ -122,8 +118,8 @@ export default function MortgageDashboard() {
           <p className="text-xl font-black text-indigo-400">{formatCurrency(results.monthlyPayment, currency)}</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => generatePDF(inputs, results, currency)} className="p-3 bg-white/10 rounded-2xl active:scale-95 transition-all hover:bg-white/20"><FileText size={20}/></button>
-          <button onClick={() => exportToCSV(results.schedule, 'Loan_Schedule')} className="bg-indigo-600 px-5 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-all text-white shadow-lg shadow-indigo-500/30">Export</button>
+          <button onClick={() => generatePDF(inputs, results, currency)} className="p-3 bg-white/10 rounded-2xl active:scale-95 transition-all"><FileText size={20}/></button>
+          <button onClick={() => exportToCSV(results.schedule, 'Loan_Schedule')} className="bg-indigo-600 px-5 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-all">Export</button>
         </div>
       </div>
     </div>

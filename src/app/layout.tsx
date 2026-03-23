@@ -6,8 +6,8 @@ import { Analytics } from "@vercel/analytics/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FinCal Pro | India's Smartest Home Loan Tool",
-  description: "Calculate Home Loans with Indian Rupee formatting, EMI breakdown, and extra payment savings.",
+  title: 'FinCal | Professional Mortgage Calculator',
+  description: 'Advanced mortgage projections and equity tracking',
 };
 
 export default function RootLayout({

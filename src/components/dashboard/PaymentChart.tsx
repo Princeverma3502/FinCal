@@ -3,17 +3,19 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useChartDimensions } from '@/hooks/useChartDimensions';
+import { formatCurrency, CurrencyCode } from '@/utils/finance';
 
 interface Props {
   data: any[];
   baselineData?: any[];
+  currency: CurrencyCode;
 }
 
-export const PaymentChart = ({ data = [], baselineData }: Props) => {
+export const PaymentChart = ({ data = [], baselineData, currency }: Props) => {
   const [containerRef, width] = useChartDimensions();
 
   // Merge the current data and baseline data for the chart
-  const chartData = data?.filter((item) => item.month % 12 === 0).map((item, index) => {
+  const chartData = data?.filter((item) => item.month % 12 === 0).map((item) => {
     const year = item.month / 12;
     const baseItem = baselineData?.find(b => b.month === item.month);
     
@@ -25,7 +27,7 @@ export const PaymentChart = ({ data = [], baselineData }: Props) => {
   }) || [];
 
   return (
-    <div ref={containerRef} className="w-full h-[350px]">
+    <div ref={containerRef as React.RefObject<HTMLDivElement>} className="w-full h-[350px]">
       {width > 0 ? (
         <AreaChart width={width} height={350} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
@@ -35,19 +37,29 @@ export const PaymentChart = ({ data = [], baselineData }: Props) => {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-          <XAxis dataKey="year" axisLine={false} tickLine={false} label={{ value: 'Years', position: 'insideBottom', offset: -5 }} />
+          <XAxis 
+            dataKey="year" 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 700 }}
+          />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tickFormatter={((val: number) => `₹${val / 100000}L`) as any}
+            tickFormatter={(val: number) => formatCurrency(val, currency)}
+            tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 700 }}
           />
           <Tooltip 
-            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-            formatter={((val: number) => [`₹${val.toLocaleString('en-IN')}`, ""] ) as any} 
-          />
-          <Legend verticalAlign="top" align="right" height={36}/>
-          
-          {/* Baseline Line (rendered first so it's behind) */}
+  cursor={{ fill: '#F8FAFC' }}
+  contentStyle={{ 
+    borderRadius: '16px', 
+    border: 'none', 
+    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' 
+  }}
+  formatter={((value: number) => [formatCurrency(value, currency), ""]) as any}
+/>
+
+          {/* Baseline Line */}
           {baselineData && (
             <Area 
               name="Baseline"
@@ -57,6 +69,7 @@ export const PaymentChart = ({ data = [], baselineData }: Props) => {
               fill="transparent" 
               strokeWidth={2} 
               strokeDasharray="5 5"
+              connectNulls
             />
           )}
 

@@ -6,18 +6,17 @@ export const CURRENCY_CONFIG: Record<CurrencyCode, { locale: string; symbol: str
   INR: { locale: 'en-IN', symbol: '₹' },
   USD: { locale: 'en-US', symbol: '$' },
   GBP: { locale: 'en-GB', symbol: '£' },
-  EUR: { locale: 'de-DE', symbol: '€' },
+  EUR: { locale: 'en-EU', symbol: '€' },
 };
 
-export const formatCurrency = (val: number, code: CurrencyCode = 'INR') => {
-  const config = CURRENCY_CONFIG[code] || CURRENCY_CONFIG.INR;
+export const formatCurrency = (amount: number, currency: CurrencyCode): string => {
+  const config = CURRENCY_CONFIG[currency];
   return new Intl.NumberFormat(config.locale, {
-    style: "currency",
-    currency: code,
+    style: 'currency',
+    currency: currency,
     maximumFractionDigits: 0,
-  }).format(val || 0);
+  }).format(amount);
 };
-
 export const getPayoffDate = (months: number): Date => {
   const date = new Date();
   date.setMonth(date.getMonth() + Math.round(months));

@@ -11,13 +11,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
   title: "FinCal | Mortgage Pro",
   description: "Advanced mortgage projections and equity tracking",
   metadataBase: new URL("https://fin-cal-theta.vercel.app"),
-  manifest: "/manifest.json",
+  manifest: "/manifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -52,9 +53,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased bg-[#F8FAFC]`}>
         {children}
-        {/* Tracks visitors anonymously */}
         <Analytics />
       </body>
     </html>

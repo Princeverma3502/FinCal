@@ -15,11 +15,11 @@ export default defineConfig({
 
 
   webServer: {
-    command: 'npm run start',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    timeout: 120 * 1000,
-  },
+  command: process.env.CI ? 'npm run build && npm run start' : 'npm run dev',
+  url: 'http://localhost:3000',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120000,
+},
 
   projects: [
     {

@@ -9,16 +9,16 @@ import { RentVsBuy } from "@/components/dashboard/RentVsBuy";
 import { GoalTracker } from "@/components/dashboard/GoalTracker";
 import { exportToCSV } from "@/utils/export";
 import { generatePDF } from "@/utils/pdfGenerator";
-import { Copy, ShieldCheck, FileText, Settings2, LayoutDashboard, Table as TableIcon, Globe, PieChart as PieIcon, Share2 } from "lucide-react";
+import { Copy, ShieldCheck, FileText, Settings2, LayoutDashboard, Table as TableIcon, Globe, PieChart as PieIcon } from "lucide-react";
 import { formatCurrency, CurrencyCode } from "@/utils/finance";
 import { BaselineData } from "@/types";
 import dynamic from 'next/dynamic';
+
+// Pro Feature Components
 import PrivacyToggle from '@/components/dashboard/PrivacyToggle';
 import ComparisonView from '@/components/dashboard/ComparisonView';
 import InstallBanner from '@/components/dashboard/InstallBanner';
 import ShareButton from '@/components/dashboard/ShareButton';
-
-
 
 const PaymentChart = dynamic(() => import('@/components/dashboard/PaymentChart').then(mod => mod.PaymentChart), { ssr: false });
 const InterestPrincipalChart = dynamic(() => import('@/components/dashboard/InterestPrincipalChart').then(mod => mod.InterestPrincipalChart), { ssr: false });
@@ -43,11 +43,11 @@ export default function MortgageDashboard() {
   }, [inputs, currency]);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] antialiased pb-24 lg:pb-0">
+    <div className="min-h-screen bg-[#F8FAFC] antialiased pb-32 lg:pb-8">
       <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-[100]">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3 group cursor-pointer transition-transform active:scale-95">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-100 group-hover:rotate-3 transition-transform border: 2px solid white;">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg border-2 border-white">
               F
             </div>
             <div className="flex flex-col">
@@ -56,11 +56,12 @@ export default function MortgageDashboard() {
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <PrivacyToggle />
             <div className="relative flex items-center bg-slate-100 rounded-xl px-2 border border-slate-200">
-              <Globe size={14} className="text-slate-400 ml-2" />
+              <Globe size={14} className="text-slate-400 ml-1 md:ml-2" />
               <select 
+                aria-label="Select Currency"
                 value={currency} 
                 onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
                 className="bg-transparent border-none text-[10px] font-black p-2 outline-none cursor-pointer text-slate-700"
@@ -83,6 +84,7 @@ export default function MortgageDashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto p-4 md:p-8">
+        {/* MOBILE TABS */}
         <div className="lg:hidden flex bg-white p-1 rounded-2xl border border-slate-200 mb-6 sticky top-20 z-[90] shadow-sm">
           <button onClick={() => setActiveTab('inputs')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'inputs' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500'}`}><Settings2 size={14}/> Inputs</button>
           <button onClick={() => setActiveTab('analysis')} className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'analysis' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500'}`}><LayoutDashboard size={14}/> Analysis</button>
@@ -90,6 +92,7 @@ export default function MortgageDashboard() {
         </div>
 
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
+          {/* ASIDE - Stacks on mobile */}
           <aside className={`w-full lg:col-span-4 space-y-6 lg:sticky lg:top-28 ${activeTab === 'inputs' ? 'block' : 'hidden lg:block'}`}>
             <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
               <InputSidebar inputs={inputs} updateInput={updateInput} currency={currency} />
@@ -123,6 +126,7 @@ export default function MortgageDashboard() {
             <RentVsBuy monthlyMortgage={results.monthlyPayment} downPayment={inputs.principal * 0.2} homeValue={inputs.principal * 1.25} currency={currency} />
           </aside>
 
+          {/* SECTION - Results Display */}
           <section className={`w-full lg:col-span-8 space-y-8 ${activeTab !== 'inputs' ? 'block' : 'hidden lg:block'}`}>
             <StatCards monthlyPayment={results.monthlyPayment} totalInterest={results.totalInterest} payoffDate={results.payoffDate} currency={currency} />
 
@@ -151,7 +155,8 @@ export default function MortgageDashboard() {
 
       <InstallBanner />
 
-      <div className="lg:hidden fixed bottom-6 left-4 right-4 bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-3xl shadow-2xl z-[110] flex justify-between items-center border border-white/10">
+      {/* MOBILE STICKY FOOTER - Improved for notched screens */}
+      <div className="lg:hidden fixed bottom-4 left-4 right-4 bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-3xl shadow-2xl z-[110] flex justify-between items-center border border-white/10 safe-area-bottom">
         <div className="pl-2">
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monthly EMI</p>
           <p className="text-xl font-black text-indigo-400 privacy-sensitive">{formatCurrency(results.monthlyPayment, currency)}</p>

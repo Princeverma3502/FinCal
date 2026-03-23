@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Share2, Check, Copy } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Share2, Check } from 'lucide-react';
 
 interface ShareButtonProps {
   title?: string;
@@ -9,17 +9,24 @@ interface ShareButtonProps {
   url?: string;
 }
 
-export default async function ShareButton({ 
+// REMOVED 'async' from the function definition
+export default function ShareButton({ 
   title = "FinCal | Mortgage Pro", 
   text = "Check out my mortgage projection and equity growth on FinCal!", 
   url 
 }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
-  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
-  // Use provided URL or fallback to current window location
-  const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  const [canShare, setCanShare] = useState(false);
+
+  // Safely check for navigator.share after mount to avoid hydration mismatch
+  useEffect(() => {
+    setCanShare(!!navigator.share);
+  }, []);
 
   const handleShare = async () => {
+    // Determine the URL inside the handler to ensure window is defined
+    const shareUrl = url || window.location.href;
+
     if (navigator.share) {
       try {
         await navigator.share({

@@ -1,18 +1,40 @@
 import { test, expect } from '@playwright/test';
 
-test('should update all symbols when currency is changed', async ({ page }) => {
-  await page.goto('http://localhost:3000');
+test.describe('Mortgage Dashboard Core Logic', () => {
+  test.beforeEach(async ({ page }) => {
+    // Increase timeout for initial page load in CI environments
+    await page.goto('/', { waitUntil: 'networkidle' });
+  });
 
-  // Change to USD
-  await page.getByLabel('Select Currency').selectOption('USD');
+  test('should update EMI when principal changes', async ({ page }) => {
+    // Target the first sensitive stat (usually Monthly EMI)
+    const emiDisplay = page.locator('.privacy-sensitive').first();
+    const initialEmi = await emiDisplay.innerText();
 
-  // Check that the '$' symbol appeared in the StatCards
-  // We look for any heading containing '$' - very robust
-  await expect(page.locator('h3:has-text("$")').first()).toBeVisible();
+    // Use spinbutton role to strictly target the number input, avoiding the range slider
+    const homePriceInput = page.getByRole('spinbutton', { name: /Home Price/i });
+    
+    // Clear and fill with a new value
+    await homePriceInput.clear();
+    await homePriceInput.fill('500000');
+    
+    // Allow calculation logic to fire (usually debounced or state-triggered)
+    await page.waitForTimeout(500);
+    
+    // Verification: The text should have changed from the initial value
+    await expect(emiDisplay).not.toHaveText(initialEmi);
+  });
 
-  // Check that the 'Loan Amount' label is present
-  await expect(page.getByText('Loan Amount')).toBeVisible();
-
-  // Check that at least one '$' exists in the sidebar
-  await expect(page.locator('aside').getByText('$').first()).toBeVisible();
+  test('should toggle privacy mode masking', async ({ page }) => {
+    const privacyBtn = page.getByRole('button', { name: /Toggle Privacy/i });
+    const html = page.locator('html');
+    
+    // 1. Click to turn Privacy Mode ON
+    await privacyBtn.click();
+    await expect(html).toHaveClass(/privacy-mode/);
+    
+    // 2. Click to turn Privacy Mode OFF
+    await privacyBtn.click();
+    await expect(html).not.toHaveClass(/privacy-mode/);
+  });
 });

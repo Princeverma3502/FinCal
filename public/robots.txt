@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-domain.vercel.app/sitemap.xml
+Sitemap: https://fin-cal-theta.vercel.app/?principal=5000000&interestRate=8.5&years=20&extraPayment=0&lumpSumAmount=0&propertyTax=0&insurance=0&taxBracket=30&curr=INR

@@ -1,9 +1,9 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { LoanInputs, LoanResults } from '@/types';
-import { formatCurrency } from './finance';
+import { formatCurrency, CurrencyCode } from './finance'; // Import CurrencyCode
 
-export const generatePDF = (inputs: LoanInputs, results: LoanResults, currency: string) => {
+export const generatePDF = (inputs: LoanInputs, results: LoanResults, currency: CurrencyCode) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
 
@@ -27,19 +27,19 @@ export const generatePDF = (inputs: LoanInputs, results: LoanResults, currency: 
     startY: 60,
     head: [['Parameter', 'Value']],
     body: [
-      ['Principal Amount', formatCurrency(inputs.principal)],
+
+      ['Principal Amount', formatCurrency(inputs.principal, currency)],
       ['Interest Rate', `${inputs.interestRate}%`],
       ['Loan Tenure', `${inputs.years} Years`],
-      ['Monthly EMI', formatCurrency(results.monthlyPayment)],
-      ['Total Interest Payable', formatCurrency(results.totalInterest)],
-      ['Total Tax Savings', formatCurrency(results.totalTaxSavings)],
+      ['Monthly EMI', formatCurrency(results.monthlyPayment, currency)],
+      ['Total Interest Payable', formatCurrency(results.totalInterest, currency)],
+      ['Total Tax Savings', formatCurrency(results.totalTaxSavings, currency)],
       ['Estimated Payoff Date', results.payoffDate.toLocaleDateString()],
     ],
     theme: 'striped',
     headStyles: { fillColor: [79, 70, 229] },
   });
 
-  // 3. Amortization Schedule (Yearly View for PDF brevity)
   const yearlyData = results.schedule.filter(item => item.month % 12 === 0 || item.remainingBalance === 0);
   
   doc.setFontSize(14);
@@ -48,11 +48,12 @@ export const generatePDF = (inputs: LoanInputs, results: LoanResults, currency: 
   autoTable(doc, {
     startY: (doc as any).lastAutoTable.finalY + 20,
     head: [['Year', 'Principal Paid', 'Interest Paid', 'Remaining Balance']],
+
     body: yearlyData.map(item => [
       `Year ${Math.ceil(item.month / 12)}`,
-      formatCurrency(item.principalPayment),
-      formatCurrency(item.interestPayment),
-      formatCurrency(item.remainingBalance)
+      formatCurrency(item.principalPayment, currency),
+      formatCurrency(item.interestPayment, currency),
+      formatCurrency(item.remainingBalance, currency)
     ]),
     headStyles: { fillColor: [30, 41, 59] },
   });

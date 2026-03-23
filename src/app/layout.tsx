@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { InstallPopup } from "@/components/ui/InstallPopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,16 +15,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "FinCal | Mortgage Pro",
-  description: "Advanced mortgage projections and equity tracking",
+  description: "Calculate your financial future with precision.",
   metadataBase: new URL("https://fin-cal-theta.vercel.app"),
-  manifest: "/manifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "FinCal",
-  },
+  manifest: "/manifest.json",
   openGraph: {
     title: "FinCal | Mortgage Pro",
     description: "Calculate your financial future with precision.",
@@ -40,9 +36,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "FinCal | Mortgage Pro",
+    description: "Calculate your financial future with precision.",
+    images: ["/opengraph-image.png"],
+  },
   icons: {
-    icon: "/icon-192.png",
-    apple: "/icon-192.png",
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
@@ -56,6 +58,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased bg-[#F8FAFC]`}>
         {children}
         <Analytics />
+        <InstallPopup />
       </body>
     </html>
   );

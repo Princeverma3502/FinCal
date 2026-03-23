@@ -16,9 +16,10 @@ export interface AmortizationPeriod {
 }
 
 export interface CalculationResults {
-  monthlyPI: number;
   monthlyPayment: number;
   totalInterest: number;
   totalCost: number;
   schedule: AmortizationPeriod[];
+  payoffDate: string;
+  monthsSaved: number;
 }

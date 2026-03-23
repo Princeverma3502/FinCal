@@ -1,52 +1,72 @@
-import { LoanInputs, CalculationResults, AmortizationPeriod } from "@/types";
+import { LoanInputs, AmortizationPeriod } from "@/types";
 
-export const calculateMortgage = (inputs: LoanInputs): CalculationResults => {
-  const { principal, interestRate, years, propertyTax, insurance } = inputs;
-  
+export const formatCurrency = (val: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(val);
+
+export const getPayoffDate = (years: number): string => {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() + Number(years));
+  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+};
+
+export const calculateMortgage = (inputs: LoanInputs) => {
+  const { principal, interestRate, years, propertyTax, insurance, extraPayment } = inputs;
+
   const monthlyRate = interestRate / 100 / 12;
   const totalMonths = years * 12;
-  
-  // 1. Calculate Monthly Principal & Interest (P&I)
-  // Formula: M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1 ]
+
+  // Monthly Principal & Interest (Standard Formula)
   let monthlyPI = 0;
   if (monthlyRate === 0) {
     monthlyPI = principal / totalMonths;
   } else {
-    monthlyPI = 
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
+    monthlyPI =
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
       (Math.pow(1 + monthlyRate, totalMonths) - 1);
   }
 
   const monthlyTax = propertyTax / 12;
   const monthlyInsurance = insurance / 12;
-  const totalMonthlyPayment = monthlyPI + monthlyTax + monthlyInsurance;
+  const baseMonthlyPayment = monthlyPI + monthlyTax + monthlyInsurance;
 
-  // 2. Generate Amortization Schedule
   let balance = principal;
   const schedule: AmortizationPeriod[] = [];
+  let totalInterestPaid = 0;
 
   for (let i = 1; i <= totalMonths; i++) {
+    if (balance <= 0) break;
+
     const interest = balance * monthlyRate;
-    const principalPaid = monthlyPI - interest;
-    balance -= principalPaid;
+    // User pays base monthly + extra
+    let actualPrincipalPaid = (monthlyPI - interest) + extraPayment;
+    
+    // Ensure we don't overpay the remaining balance
+    if (actualPrincipalPaid > balance) {
+      actualPrincipalPaid = balance;
+    }
+
+    totalInterestPaid += interest;
+    balance -= actualPrincipalPaid;
 
     schedule.push({
       month: i,
-      payment: totalMonthlyPayment,
+      payment: baseMonthlyPayment + extraPayment,
       interestPaid: interest,
-      principalPaid: principalPaid,
+      principalPaid: actualPrincipalPaid,
       remainingBalance: Math.max(0, balance),
     });
   }
 
   return {
-    monthlyPI,
-    monthlyPayment: totalMonthlyPayment,
-    totalInterest: (monthlyPI * totalMonths) - principal,
-    totalCost: (monthlyPI * totalMonths) + propertyTax * years + insurance * years,
-    schedule
+    monthlyPayment: baseMonthlyPayment + extraPayment,
+    totalInterest: totalInterestPaid,
+    totalCost: principal + totalInterestPaid + (propertyTax * years) + (insurance * years),
+    schedule,
+    payoffDate: getPayoffDate(schedule.length / 12),
+    monthsSaved: totalMonths - schedule.length
   };
 };
-
-export const formatCurrency = (val: number) => 
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);

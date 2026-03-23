@@ -27,7 +27,7 @@ export const metadata = {
     siteName: "FinCal",
     images: [
       {
-        url: "/opengraph-image.jpg",
+        url: "/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "FinCal Dashboard Preview",
@@ -38,9 +38,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FinCal | Mortgage Pro",
-    description: "Calculate your financial future with precision.",
-    images: ["/opengraph-image.jpg"],
+    images: ["/opengraph-image.png"],
   },
   icons: {
     icon: "/icon.png",

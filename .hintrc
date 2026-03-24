@@ -23,6 +23,7 @@
         "aria-valid-attr-value": "off"
       }
     ],
-    "typescript-config/consistent-casing": "off"
+    "typescript-config/consistent-casing": "off",
+    "apple-touch-icons": "off"
   }
 }

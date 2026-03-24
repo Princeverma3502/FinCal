@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react";
-import { InstallPopup } from "@/components/ui/InstallPopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,30 +15,23 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "FinCal | Mortgage Pro",
-  description: "Calculate your financial future with precision.",
-  metadataBase: new URL("https://fin-cal-theta.vercel.app"),
-  manifest: "/manifest.json",
+  description: "Professional Mortgage Calculator",
   icons: {
-    icon: [
-      { url: "/icon.png?v=4", type: "image/png" },
-      { url: "/icon.png?v=4", sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      { url: "/icon.png?v=4", sizes: "180x180", type: "image/png" },
-    ],
+    icon: "/icon.png?v=6",
+    apple: "/icon.png?v=6",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden">
       <head>
-        <link rel="icon" href="/icon.png?v=4" />
+        {/* Force browser to refresh the tab icon */}
+        <link rel="icon" href="/icon.png?v=6" />
+        <link rel="apple-touch-icon" href="/icon.png?v=6" />
       </head>
       <body className={`${inter.className} antialiased bg-[#F8FAFC] overflow-x-hidden w-full relative`}>
         {children}
-        <Analytics />
-        <InstallPopup />
       </body>
     </html>
   );

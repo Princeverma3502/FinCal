@@ -12,43 +12,46 @@
   --foreground: #0f172a;
 }
 
-/* --- THE VIEWPORT LOCK FIX --- */
+/* Force the viewport to remain 100% wide with no side-scrolling */
 html, body {
-  max-width: 100%;
-  overflow-x: hidden; /* Prevents horizontal scroll globally */
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   position: relative;
-  touch-action: pan-y; /* Improves mobile touch feel */
+  margin: 0;
+  padding: 0;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   min-height: 100dvh;
-  width: 100vw;
 }
 
-/* Force Navbar to stay inside the window */
-nav, header, .navbar-container {
-  width: 100% !important;
-  max-width: 100vw !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
+/* Fix for the Navbar items leaking out */
+nav {
   display: flex;
-  flex-wrap: nowrap; /* Prevents internal items from pushing outward */
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden; /* This hides any overflow from tabs */
+  box-sizing: border-box;
 }
 
-/* Ensure no child element accidentally pushes the width */
+/* If you have a container inside the navbar, force it to wrap */
+.nav-content {
+  display: flex;
+  flex-wrap: wrap; /* This ensures tabs stack rather than pushing right */
+  width: 100%;
+}
+
 * {
   box-sizing: border-box;
 }
-/* ----------------------------- */
 
+/* Slider and Privacy styles remain the same... */
 .privacy-mode .privacy-sensitive {
   filter: blur(12px);
   opacity: 0.5;
-  pointer-events: none;
-  -webkit-user-select: none;
-  user-select: none;
   transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
@@ -58,15 +61,4 @@ input[type='range'] {
   height: 6px;
   background: #e2e8f0;
   border-radius: 8px;
-  cursor: pointer;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  appearance: none;
-  height: 16px;
-  width: 16px;
-  background: #6366F1;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }

@@ -15,7 +15,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "FinCal | Mortgage Pro",
   description: "Calculate your financial future with precision.",
   metadataBase: new URL("https://fin-cal-theta.vercel.app"),
@@ -38,6 +38,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    title: "FinCal | Mortgage Pro",
+    description: "Calculate your financial future with precision.",
     images: ["/opengraph-image.png"],
   },
   icons: {
@@ -53,7 +55,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased bg-[#F8FAFC]`}>
+      <body className={`${inter.className} antialiased bg-[#F8FAFC] overflow-x-hidden w-full relative`}>
         {children}
         <Analytics />
         <InstallPopup />

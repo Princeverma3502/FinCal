@@ -4,20 +4,24 @@ test.describe('Dashboard Features', () => {
   test('privacy toggle should mask sensitive values', async ({ page, isMobile }) => {
     await page.goto('/');
     
-    // If on mobile, the toggle is inside the hamburger menu
+    // Target the button specifically
+    const privacyBtn = page.getByRole('button', { name: /Toggle Privacy/i }).first();
+
     if (isMobile) {
-      await page.getByLabel('Open Menu').click();
+      // 1. Open the Menu
+      const menuBtn = page.getByLabel('Open Menu');
+      await menuBtn.click();
+      
+      // 2. Wait for the menu to actually be visible/animated in
+      // This solves the Safari timeout issue
+      await expect(privacyBtn).toBeVisible({ timeout: 5000 });
     }
 
-    const privacyBtn = page.getByRole('button', { name: /Toggle Privacy/i }).first();
-    const emiDisplay = page.locator('.privacy-sensitive').first();
-    
-    // 1. Turn Privacy ON
+    // 3. Turn Privacy ON
     await privacyBtn.click();
-    // Check for the class on the body/html and CSS filter
     await expect(page.locator('html')).toHaveClass(/privacy-mode/);
     
-    // 2. Turn Privacy OFF
+    // 4. Turn Privacy OFF
     await privacyBtn.click();
     await expect(page.locator('html')).not.toHaveClass(/privacy-mode/);
   });
@@ -27,6 +31,7 @@ test.describe('Dashboard Features', () => {
 
     if (isMobile) {
       await page.getByLabel('Open Menu').click();
+      // Use getByRole or getByLabel to ensure we find the right one in the list
       await expect(page.getByLabel('Mobile Export PDF')).toBeVisible();
     } else {
       await expect(page.getByLabel('Desktop Export PDF')).toBeVisible();

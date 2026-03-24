@@ -7,7 +7,7 @@ import { InputSidebar } from "@/components/dashboard/InputSidebar";
 import { AmortizationTable } from "@/components/dashboard/AmortizationTable";
 import { exportToCSV } from "@/utils/export";
 import { generatePDF } from "@/utils/pdfGenerator";
-import { FileText, Settings2, LayoutDashboard, Table as TableIcon, Globe, Menu, X, Download, Share2 } from "lucide-react";
+import { FileText, Settings2, LayoutDashboard, Table as TableIcon, Menu, X, Download, PieChart as PieIcon } from "lucide-react";
 import { formatCurrency, CurrencyCode } from "@/utils/finance";
 import dynamic from 'next/dynamic';
 
@@ -25,46 +25,36 @@ export default function MortgageDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] w-full overflow-x-hidden">
-      {/* PROFESSIONAL NAVBAR */}
+      {/* NAVBAR WITH HAMBURGER */}
       <nav className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-[200] w-full">
         <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black">F</div>
+            <img src="/icon.png" alt="Logo" className="w-8 h-8 rounded-lg" />
             <span className="text-xl font-black text-slate-900 tracking-tighter">FinCal</span>
           </div>
 
-          {/* Desktop Only Actions */}
+          {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-4">
             <PrivacyToggle />
-            <div className="flex items-center bg-slate-100 rounded-xl px-2 h-9 border border-slate-200">
-              <Globe size={14} className="text-slate-400 mr-2" />
-              <select value={currency} onChange={(e) => setCurrency(e.target.value as CurrencyCode)} className="bg-transparent text-xs font-bold outline-none">
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-              </select>
-            </div>
-            <button onClick={() => generatePDF(inputs, results, currency)} className="p-2 bg-slate-900 text-white rounded-lg"><Download size={18}/></button>
+            <ShareButton />
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-slate-600 bg-slate-100 rounded-xl">
+          {/* Hamburger Icon */}
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* MOBILE DRAWER (The List View) */}
+        {/* MOBILE LIST MENU (Professional Dropdown) */}
         {isMenuOpen && (
           <div className="lg:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-2xl z-[190] p-4 space-y-2 animate-in slide-in-from-top duration-200">
             <button onClick={() => {setActiveTab('inputs'); setIsMenuOpen(false);}} className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold ${activeTab === 'inputs' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600'}`}><Settings2 size={20}/> Edit Inputs</button>
             <button onClick={() => {setActiveTab('analysis'); setIsMenuOpen(false);}} className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold ${activeTab === 'analysis' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600'}`}><LayoutDashboard size={20}/> View Analysis</button>
             <button onClick={() => {setActiveTab('schedule'); setIsMenuOpen(false);}} className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold ${activeTab === 'schedule' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600'}`}><TableIcon size={20}/> Payment Schedule</button>
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <button onClick={() => generatePDF(inputs, results, currency)} className="flex items-center justify-center gap-2 p-4 bg-slate-900 text-white rounded-2xl font-bold text-xs"><FileText size={16}/> PDF</button>
-              <button onClick={() => exportToCSV(results.schedule, 'FinCal')} className="flex items-center justify-center gap-2 p-4 bg-indigo-600 text-white rounded-2xl font-bold text-xs"><Download size={16}/> CSV</button>
-            </div>
-            <div className="flex justify-between items-center p-2 pt-4">
-              <PrivacyToggle />
-              <ShareButton />
+            <div className="h-px bg-slate-100 my-2" />
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => generatePDF(inputs, results, currency)} className="flex items-center justify-center gap-2 p-4 bg-slate-900 text-white rounded-2xl font-bold text-xs"><FileText size={16}/> Export PDF</button>
+              <button onClick={() => exportToCSV(results.schedule, 'FinCal')} className="flex items-center justify-center gap-2 p-4 bg-indigo-600 text-white rounded-2xl font-bold text-xs"><Download size={16}/> Export CSV</button>
             </div>
           </div>
         )}
@@ -93,8 +83,8 @@ export default function MortgageDashboard() {
         </div>
       </main>
 
-      {/* STICKY FOOTER SUMMARY */}
-      <div className="lg:hidden fixed bottom-6 left-4 right-4 bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-3xl shadow-2xl z-[150] flex justify-between items-center">
+      {/* STICKY FOOTER SUMMARY (Unique Test ID added) */}
+      <div data-testid="mobile-sticky-footer" className="lg:hidden fixed bottom-6 left-4 right-4 bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-3xl shadow-2xl z-[150] flex justify-between items-center border border-white/10">
         <div>
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monthly EMI</p>
           <p className="text-xl font-black text-indigo-400 privacy-sensitive">{formatCurrency(results.monthlyPayment, currency)}</p>

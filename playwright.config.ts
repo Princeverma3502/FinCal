@@ -7,19 +7,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-
   use: {
     baseURL: 'http://localhost:3000',
+    /* RECORDING SETTINGS */
     trace: 'on-first-retry',
+    video: 'on-first-retry', // This records video when a test fails and retries
+    screenshot: 'only-on-failure',
   },
-
-
-  webServer: {
-  command: process.env.CI ? 'npm run build && npm run start' : 'npm run dev',
-  url: 'http://localhost:3000',
-  reuseExistingServer: !process.env.CI,
-  timeout: 120000,
-},
 
   projects: [
     {
@@ -34,5 +28,21 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
+    /* Mobile Viewports */
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 12'] },
+    },
   ],
+
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
 });

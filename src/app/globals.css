@@ -20,8 +20,8 @@ html, body {
   position: relative;
   margin: 0;
   padding: 0;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -30,27 +30,22 @@ body {
   min-height: 100dvh;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-/* Prevent any div from ever stretching the width */
-main, section, div, aside, nav {
-  max-width: 100% !important;
-}
-
-.recharts-responsive-container {
-  max-width: 100% !important;
-  overflow: hidden;
+html {
+  scrollbar-gutter: stable;
 }
 
 .privacy-mode .privacy-sensitive {
-  filter: blur(10px);
-  opacity: 0.5;
+  filter: blur(8px);
+  opacity: 0.6;
   pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   transition: all 0.3s ease;
 }
 
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+/* Fix for charts pushing width */
+.recharts-wrapper, .recharts-surface {
+  max-width: 100% !important;
 }

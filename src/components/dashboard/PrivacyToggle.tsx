@@ -24,29 +24,20 @@ export default function PrivacyToggle() {
   return (
     <button
       onClick={(e) => {
-        e.stopPropagation();
+        e.preventDefault();
         setIsPrivate(!isPrivate);
       }}
-      aria-label="Toggle Privacy Mode"
-      aria-pressed={isPrivate}
+      aria-label="Toggle Privacy"
+      data-testid="privacy-toggle-btn"
       type="button"
-      className={`relative z-[130] flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+      className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold transition-all w-full lg:w-auto ${
         isPrivate 
-          ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-200' 
-          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+          ? 'bg-amber-100 text-amber-700' 
+          : 'bg-white border border-slate-200 text-slate-600'
       }`}
     >
-      {isPrivate ? (
-        <>
-          <EyeOff size={14} className="animate-in zoom-in duration-200" /> 
-          <span>Privacy: ON</span>
-        </>
-      ) : (
-        <>
-          <Eye size={14} className="animate-in zoom-in duration-200" /> 
-          <span>Privacy: OFF</span>
-        </>
-      )}
+      {isPrivate ? <EyeOff size={16} /> : <Eye size={16} />}
+      <span>Privacy {isPrivate ? 'ON' : 'OFF'}</span>
     </button>
   );
 }

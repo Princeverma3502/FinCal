@@ -129,9 +129,13 @@ export default function MortgageDashboard() {
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monthly EMI</p>
           <p className="text-xl font-black text-indigo-400 privacy-sensitive">{formatCurrency(results.monthlyPayment, currency)}</p>
         </div>
-        <button onClick={() => setIsMenuOpen(true)} className="bg-white/10 p-3 rounded-2xl" aria-label="Open Sticky Menu">
-          <Menu size={20}/>
-        </button>
+        <button 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="p-2 lg:hidden"
+          aria-label="Open Menu"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
       </div>
     </div>
   );

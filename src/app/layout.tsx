@@ -7,17 +7,17 @@ import { InstallPopup } from "@/components/ui/InstallPopup";
 const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
-  themeColor: "#4f46e5",
+  themeColor: "#6366F1",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
+  userScalable: false, // Prevents horizontal "jiggle" when typing
   viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
   title: "FinCal | Mortgage Pro",
-  description: "Calculate your financial future with precision.",
+  description: "Professional Mortgage Tracker & Wealth Visualizer",
   metadataBase: new URL("https://fin-cal-theta.vercel.app"),
   manifest: "/manifest.json",
   openGraph: {
@@ -43,8 +43,14 @@ export const metadata: Metadata = {
     images: ["/opengraph-image.png"],
   },
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: [
+      { url: "/icon.png?v=1", type: "image/png" },
+      { url: "/icon.png?v=1", type: "image/png", sizes: "32x32" }
+    ],
+    shortcut: "/icon.png?v=1",
+    apple: [
+      { url: "/icon.png?v=1", sizes: "180x180", type: "image/png" }
+    ],
   },
 };
 

@@ -20,19 +20,14 @@ export const metadata: Metadata = {
   description: "Calculate your financial future with precision.",
   metadataBase: new URL("https://fin-cal-theta.vercel.app"),
   manifest: "/manifest.json",
-  openGraph: {
-    title: "FinCal | Mortgage Pro",
-    description: "Calculate your financial future with precision.",
-    url: "https://fin-cal-theta.vercel.app",
-    siteName: "FinCal",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
-    locale: "en_US",
-    type: "website",
-  },
   icons: {
-    icon: "/icon.png?v=1",
-    shortcut: "/icon.png?v=1",
-    apple: "/icon.png?v=1",
+    icon: [
+      { url: "/icon.png?v=4", type: "image/png" },
+      { url: "/icon.png?v=4", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon.png?v=4", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
@@ -40,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.png?v=1" sizes="any" />
+        <link rel="icon" href="/icon.png?v=4" />
       </head>
       <body className={`${inter.className} antialiased bg-[#F8FAFC] overflow-x-hidden w-full relative`}>
         {children}

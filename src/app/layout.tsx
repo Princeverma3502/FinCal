@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "FinCal",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "FinCal - Professional Mortgage Calculator",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FinCal | Mortgage Pro",
     description: "Professional Mortgage Calculator — Smart EMI, Tax Benefits & Amortization",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 };
 

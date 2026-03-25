@@ -15,10 +15,33 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "FinCal | Mortgage Pro",
-  description: "Professional Mortgage Calculator",
+  description: "Professional Mortgage Calculator — Smart EMI, Tax Benefits, Rent vs Buy Analysis & Amortization Schedule",
+  metadataBase: new URL("https://fin-cal-theta.vercel.app"),
   icons: {
     icon: "/icon.png?v=6",
     apple: "/icon.png?v=6",
+  },
+  openGraph: {
+    title: "FinCal | Mortgage Pro",
+    description: "Professional Mortgage Calculator — Smart EMI, Tax Benefits, Rent vs Buy Analysis & Amortization Schedule",
+    url: "https://fin-cal-theta.vercel.app",
+    siteName: "FinCal",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "FinCal - Professional Mortgage Calculator",
+      },
+    ],
+    type: "website",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FinCal | Mortgage Pro",
+    description: "Professional Mortgage Calculator — Smart EMI, Tax Benefits & Amortization",
+    images: ["/og-image.png"],
   },
 };
 

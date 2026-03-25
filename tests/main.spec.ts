@@ -80,8 +80,8 @@ test.describe('FinCal Comprehensive Suite', () => {
       await page.goto('/');
       
       await expect(page.getByText('Debt-to-Income (DTI)')).toBeVisible();
-      // Should show a percentage value
-      await expect(page.locator('text=/%/')).toBeVisible();
+      // Should show the DTI percentage and a risk level label
+      await expect(page.getByText(/\d+\.\d+%/)).toBeVisible();
     });
 
     test('Rent vs Buy analysis renders', async ({ page }) => {
